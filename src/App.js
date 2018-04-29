@@ -19,26 +19,64 @@ class App extends Component {
 class Calculator extends React.Component {
   state = {
     screen: "",
-    calc: [],
+    newCalc: false,
   }
+
   handleClick = (e) => {
     const val = e.target.value;
+    console.log(val)
     let screen = this.state.screen;
-    if(val !== 'C' && val !== '=') {
-      screen += val;
-      this.setState({screen});
+    console.log(screen)
+    const lastVal = screen[screen.length - 1];
+
+    if (screen.length < 20) { 
+      
+      if (e.target.className.includes('num')) {
+        screen += val;
+        this.setState({ 
+          screen: screen,
+          newCalc: false
+         });
+      }   
+      else if (e.target.className.includes('calc')) {
+        if (lastVal >= 0 && lastVal <= 9) {
+          screen += val;
+          this.setState({ screen: screen, newcalc: false });
+        }
+      }
+      else if (e.target.className.includes('decimal') && !screen.includes('.')) {
+        if (!lastVal) {
+          screen += '0' + val;
+          this.setState({ screen });
+        }
+        if (lastVal >= 0 && lastVal <= 9) {
+          screen += val;
+          this.setState({ screen });
+        } 
+      }
+      else if (e.target.className.includes('equal') && lastVal >= 0 && lastVal <= 9) {
+        this.calculate();
+      }
+      else if (e.target.className.includes('clear')) {
+          this.reset();
+        }
     }
   }
 
   reset = () => {
     this.setState({
       screen: '',
-      calc: []
+      newCalc: false,
     })
   }
 
   calculate = () => {
-    const val = this.state.screen;
+    const value = this.state.screen;
+    const result = eval(value).toString();
+    this.setState({
+      screen: result,
+      newCalc: true
+    })
   }
 
   render() {
@@ -49,24 +87,24 @@ class Calculator extends React.Component {
           {screenValue}
         </div>
         <div className="buttons" onClick={((e) => this.handleClick(e))}>
-          <button value="C" className="btn clear grey" onClick={this.reset}>C</button>
-          <button value="%" className="btn grey">%</button>
-          <button value="/" className="btn orange">&divide;</button>
-          <button value="7" className="btn">7</button>
-          <button value="8" className="btn">8</button>
-          <button value="9" className="btn">9</button>
-          <button value="*" className="btn orange">&times;</button>
-          <button value="4" className="btn">4</button>
-          <button value="5" className="btn">5</button>
-          <button value="6" className="btn">6</button>
-          <button value="-" className="btn orange">&minus;</button>
-          <button value="1" className="btn">1</button>
-          <button value="2" className="btn">2</button>
-          <button value="3" className="btn">3</button>
-          <button value="+" className="btn orange">+</button>
-          <button value="0" className="btn zero">0</button>
-          <button value="." className="btn">&middot;</button>
-          <button value="=" className="btn orange" onClick={this.calculate}>=</button>
+          <button value="C" className="btn clear">C</button>
+          <button value="%" className="btn calc">&#37;</button>
+          <button value="/" className="btn orange calc">&divide;</button>
+          <button value="7" className="btn num">7</button>
+          <button value="8" className="btn num">8</button>
+          <button value="9" className="btn num">9</button>
+          <button value="*" className="btn orange calc">&times;</button>
+          <button value="4" className="btn num">4</button>
+          <button value="5" className="btn num">5</button>
+          <button value="6" className="btn num">6</button>
+          <button value="-" className="btn orange calc">&minus;</button>
+          <button value="1" className="btn num">1</button>
+          <button value="2" className="btn num">2</button>
+          <button value="3" className="btn num">3</button>
+          <button value="+" className="btn orange calc">&#43;</button>
+          <button value="0" className="btn num zero">0</button>
+          <button value="." className="btn decimal">&middot;</button>
+          <button value="=" className="btn orange equal">=</button>
         </div>
       </div>
     )

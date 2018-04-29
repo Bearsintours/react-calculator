@@ -45,11 +45,8 @@
   height: 280px;
 }
 
+.zero,
 .clear {
-  grid-column: span 2;
-}
-
-.zero {
   grid-column: span 2;
 }
 
